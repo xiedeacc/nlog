@@ -1,0 +1,63 @@
+syntax="proto2";
+
+package nlog;
+
+enum LogLevel
+{
+  LEVEL_TRACE    = 0;
+  LEVEL_DEBUG    = 1;
+  LEVEL_INFO     = 2;
+  LEVEL_WARN     = 3;
+  LEVEL_ERROR    = 4;
+  LEVEL_CRITICAL = 5;
+  LEVEL_OFF      = 6;
+}
+
+enum LogMode
+{
+  MODE_SYNC = 0;
+  MODE_ASYNC = 1;
+}
+
+message Conf
+{
+  optional string name = 1;
+  optional string file = 2;
+  optional bool is_default = 3;
+
+  optional LogLevel level = 4;
+  optional string pattern = 5;
+
+  //sync:0,async:1
+  optional LogMode mode = 6;
+  optional int32 queue_size = 7;
+  optional int32 thread_size = 8;
+
+  //0:Block by default
+  //1:Discard oldest message in the queue if full
+  optional int32 overflow_policy = 9;
+
+  //Severity based flush
+  optional LogLevel flush_severity = 10;
+
+  //the max num of hourly or minutely based file
+  optional int32 max_files = 11;
+
+  //optional int32 rotating_minutes = 12; // rotate hourly if this field is absent 
+}
+
+message Global {
+  optional int32 flush_interval  = 1;
+  optional LogLevel flush_severity  = 2;
+  optional int32 queue_size  = 3;
+  optional int32 thread_size  = 4;
+  optional LogLevel level = 5;
+  optional string pattern = 6;
+}
+
+message LogConf 
+{
+  required string project        = 1;
+  optional Global global         = 2;
+  repeated Conf loggers          = 3;
+}
